@@ -1,27 +1,31 @@
+#Credits to ohyicong
+
 import os
 import json
 import base64
+import shutil
 import sqlite3
 import win32crypt
 from Cryptodome.Cipher import AES
-import shutil
 from datetime import timezone, datetime, timedelta
 
+
 # color for pritty print
+end        = "\033[0m"
+bold       = "\033[1m"
 red        = "\033[31m"
 green      = "\033[32m"
 yellow     = "\033[33m"
 blue       = "\033[34m"
 violet     = "\033[35m"
 lightBlue  = "\033[36m"
-end        = "\033[0m"
-bold       = "\033[1m"
 
 
 def test_os():
     # test if running on windows?
     if(os.name == 'nt'):
         return True
+
 
 def get_chrome_datetime(chromedate):
     """Return a `datetime.datetime` object from a Chrome format datetime
@@ -30,9 +34,9 @@ def get_chrome_datetime(chromedate):
 
 
 def get_encryption_key():
-    local_state_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "Local State")
+    LOCAL_STATE_FILE_PATH = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "Local State")
     try:
-        with open(local_state_path, "r", encoding="utf-8") as f:
+        with open(LOCAL_STATE_FILE_PATH, "r", encoding="utf-8") as f:
             local_state = f.read()
             local_state = json.loads(local_state)
 
@@ -75,11 +79,11 @@ def main():
         # get the AES key from OS
         key = get_encryption_key()
         # path to sqlite Chrome database path from the OS
-        db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "default", "Login Data")
+        CHROME_DB_PATH = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "default", "Login Data")
 
         # copy the file to another location, as the db will be locked if Chrome is currently running
         chromeDb = "ChromeDb.db"
-        shutil.copyfile(db_path, chromeDb)
+        shutil.copyfile(CHROME_DB_PATH, chromeDb)
         # connect to the db
         db = sqlite3.connect(chromeDb)
         cursor = db.cursor()
