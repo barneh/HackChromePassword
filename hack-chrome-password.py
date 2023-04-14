@@ -36,8 +36,8 @@ def get_chrome_datetime(chromedate):
 def get_encryption_key():
     LOCAL_STATE_FILE_PATH = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "Local State")
     try:
-        with open(LOCAL_STATE_FILE_PATH, "r", encoding="utf-8") as f:
-            local_state = f.read()
+        with open(LOCAL_STATE_FILE_PATH, "r", encoding="utf-8") as file:
+            local_state = file.read()
             local_state = json.loads(local_state)
 
         # decode the encryption key from Base64
